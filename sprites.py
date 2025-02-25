@@ -6,3 +6,4 @@ class Sprite(pygame.sprite.Sprite):
         self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
         self.image.fill('white') #filling the blocks with white to de able to deal with collisions easier
         self.rect = self.image.get_rect(topleft = pos)
+        self.old_rect = self.rect.copy()

@@ -4,9 +4,12 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, collision_sprites):
         super().__init__(groups)
         self.image = pygame.Surface((48,56)) # general dimensions of the character
-        self.rect = self.image.get_rect(topleft = pos)
+        
         self.image.fill('red') # red to allow player to be seen in the black background
 
+        #rect
+        self.rect = self.image.get_rect(topleft = pos)
+        self.old_rect = self.rect.copy
         # creating the movement
         self.direction = vector()
         self.speed = 500
@@ -42,11 +45,15 @@ class Player(pygame.sprite.Sprite):
             if sprites.rect.colliderect(self.rect):
                 if axis == 'horizontal':
                     #left
-                    if self.rect.left <= sprites.rect.right:
+                    if self.rect.left <= sprites.rect.right and self.old_rect.left >= sprites.old_rect.right:
                         self.rect.left = sprites.rect.right
+                    #right
+                    if self.rect.right >= sprites.rect.left and self.old_rect.right <= sprites.old_rect.left:
+                        self.rect.right = sprites.rect.left
                 else: 
                     pass
 
     def update(self, dt):
+        self.old_rect = self.rect.copy()
         self.input()
         self.move(dt)
