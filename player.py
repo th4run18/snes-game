@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
 
         # creating the movement
         self.direction = vector()
-        self.speed = 200
+        self.speed = 500
 
         # collision detection
         self.collision_sprites = collision_sprites
