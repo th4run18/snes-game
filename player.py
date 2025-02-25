@@ -41,8 +41,9 @@ class Player(pygame.sprite.Sprite):
         for sprites in self.collision_sprites:
             if sprites.rect.colliderect(self.rect):
                 if axis == 'horizontal':
-                    #left collision
-                    print('over')
+                    #left
+                    if self.rect.left <= sprites.rect.right:
+                        self.rect.left = sprites.rect.right
                 else: 
                     pass
 
