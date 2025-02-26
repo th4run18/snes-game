@@ -21,6 +21,7 @@ class Player(pygame.sprite.Sprite):
         self.collision_sprites = collision_sprites
         self.on_surface = {'floor': False, 'left': False, 'right' : False}
 
+        self.display_surface = pygame.display.get_surface()
         
 
     def input(self):
@@ -59,11 +60,18 @@ class Player(pygame.sprite.Sprite):
 
     def check_contact(self):
         floor_rect = pygame.Rect(self.rect.bottomleft,(self.rect.width,2))
+        right_rect = pygame.Rect(self.rect.topright + vector(0,self.rect.height / 4),(2, self.rect.height / 2))
+        left_rect = pygame.Rect(self.rect.topleft + vector(-2, self.rect.height / 4), (2,self.rect.height/2))
+        
+        pygame.draw.rect(self.display_surface, 'yellow', floor_rect)
+        pygame.draw.rect(self.display_surface, 'yellow', right_rect)
+        pygame.draw.rect(self.display_surface, 'yellow', left_rect)
         collide_rects = [sprite.rect for sprite in self.collision_sprites]
-
         #collisions
         self.on_surface['floor'] = True if floor_rect.collidelist(collide_rects) >= 0 else False
-
+        self.on_surface['right'] = True if right_rect.collidelist(collide_rects) >= 0 else False
+        self.on_surface['left'] = True if right_rect.collidelist(collide_rects) >= 0 else False
+        print(self.on_surface)
 
 
     def collision(self,axis):

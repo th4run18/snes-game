@@ -22,7 +22,7 @@ class Level:
                 
 
     def run(self, dt):
-        self.all_sprites.update(dt)
         self.display_surface.fill('black') # setting a black ground to black to be able to see the platform clearly
+        self.all_sprites.update(dt)
         self.all_sprites.draw(self.display_surface)
         
