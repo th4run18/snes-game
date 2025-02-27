@@ -1,4 +1,5 @@
 from setting import *
+from timer import Timer
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, collision_sprites):
@@ -12,7 +13,7 @@ class Player(pygame.sprite.Sprite):
         self.old_rect = self.rect.copy 
         # creating the movement
         self.direction = vector()
-        self.speed = 500
+        self.speed = 200
         self.gravity = 1300 #value for gravity to allow player to fall
         self.jump = False # create attribute to be able to change when jumping
         self.jump_height = 900
@@ -22,6 +23,11 @@ class Player(pygame.sprite.Sprite):
         self.on_surface = {'floor': False, 'left': False, 'right' : False}
 
         self.display_surface = pygame.display.get_surface()
+
+        # timer 
+        self.timers = {
+            'wall jump' : Timer(200)
+        }
         
 
     def input(self):
@@ -40,6 +46,8 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_SPACE]:
            self.jump = True
+           self.timers['wall jump'].activate()
+
    
    
     def move(self, dt):
@@ -64,7 +72,7 @@ class Player(pygame.sprite.Sprite):
                self.direction.y = -self.jump_height
                self.direction.x = 1 if self.on_surface['left'] else -1
         self.jump = False
-    
+
 
 
         self.collision('vertical')
@@ -101,10 +109,16 @@ class Player(pygame.sprite.Sprite):
                     if self.rect.bottom >= sprites.rect.top and self.old_rect.bottom <= sprites.old_rect.top:
                         self.rect.bottom = sprites.rect.top 
                     self.direction.y = 0  # to keep gravity constant while playing the game             
-                    
-                    
+            
+    def update_timers(self):
+        for timer in self.timers.values():
+            timer.update()
+
+        
     def update(self, dt):
         self.old_rect = self.rect.copy()
+        self.update_timers()
         self.input()
         self.move(dt)
         self.check_contact()
+        print(self.timers['wall jump'].active)
