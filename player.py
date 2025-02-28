@@ -33,16 +33,16 @@ class Player(pygame.sprite.Sprite):
     def input(self):
         keys = pygame.key.get_pressed() # introducing key presses to control character
         input_vector = vector(0,0)
+        if not self.timers['wall jump'].active:
+            if keys[pygame.K_RIGHT]:
+                input_vector.x += 1 #moving to the right by 1 increment
 
-        if keys[pygame.K_RIGHT]:
-            input_vector.x += 1 #moving to the right by 1 increment
-
-        if keys[pygame.K_LEFT]:
-            input_vector.x -= 1 #moving to the left by 1 increment
+            if keys[pygame.K_LEFT]:
+                input_vector.x -= 1 #moving to the left by 1 increment
         
         # if input_vector else input_vector is needed as (0,0) cannot be normalised
       
-        self.direction.x = input_vector.normalize().x if input_vector else input_vector.x
+            self.direction.x = input_vector.normalize().x if input_vector else input_vector.x
 
         if keys[pygame.K_SPACE]:
            self.jump = True
@@ -69,6 +69,7 @@ class Player(pygame.sprite.Sprite):
            if self.on_surface['floor']:
                 self.direction.y = -self.jump_height
         elif any((self.on_surface['left'], self.on_surface['right'])):
+               self.timers['wall jump'].activate()
                self.direction.y = -self.jump_height
                self.direction.x = 1 if self.on_surface['left'] else -1
         self.jump = False
