@@ -59,7 +59,7 @@ class Player(pygame.sprite.Sprite):
             elif any((self.on_surface['left'], self.on_surface['right'])):
                 self.timers['wall jump'].activate()
                 self.direction.y = -self.jump_height
-                self.direction.x = 1.5 if self.on_surface['left'] else -1.5 # Add horizontal force for wall jump
+                self.direction.x = 1.5 if self.on_surface['left'] else -1.5
         self.jump = False
 
     def check_contact(self):
@@ -104,4 +104,4 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.move(dt)
         self.check_contact()
-        print(self.timers['wall jump'].active)
+        # Removed the print statement to stop printing True/False

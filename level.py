@@ -1,5 +1,5 @@
 from setting import *
-from sprites import Sprite
+from sprites import Sprite, MovingSprite
 from player import Player # importing player to allow it to be able to interact with the level
 
 class Level:
@@ -16,9 +16,29 @@ class Level:
         for x, y, surf in tmx_map.get_layer_by_name('Terrain').tiles(): # being able to connect tiled to my terminal
             Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, (self.all_sprites, self.collision_sprites))
 
+        #objects
         for obj in tmx_map.get_layer_by_name('Objects'):
             if obj.name == 'player': # introduces the players start position
                 Player((obj.x,obj.y), self.all_sprites, self.collision_sprites) # PLAYER is not in collision_sprites, stops Player from colliding with itself
+
+        # Moving objects
+        for obj in tmx_map.get_layer_by_name('Moving Objects'):
+            if obj.name == 'helicopter':
+                if obj.width > obj.height: # horizontal
+                    move_dir = 'x'
+                    start_pos = (obj.x , obj.y + obj.height / 2)
+                    end_pos = (obj.x , obj.width,obj.y + obj.height / 2)
+                else: # vertical
+                    move_dir = 'y'
+                    start_pos = (obj.x + obj.width/2 , obj.y)
+                    end_pos = (obj.x , obj.width/ 2 ,obj.y + obj.height)
+                speed = obj.properties['speed']
+                MovingSprite(self.all_sprites, start_pos , end_pos, move_dir, speed)
+
+                print(obj.width)
+                print(obj.height)
+              
+
                 
 
     def run(self, dt):
