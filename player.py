@@ -4,118 +4,100 @@ from timer import Timer
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, collision_sprites):
         super().__init__(groups)
-        self.image = pygame.Surface((48,56)) # general dimensions of the character
-        
-        self.image.fill('red') # red to allow player to be seen in the black background
+        self.image = pygame.Surface((48, 56))  # General dimensions of the character
+        self.image.fill('red')  # Red to allow player to be seen in the black background
 
-        #rect
-        self.rect = self.image.get_rect(topleft = pos)
-        self.old_rect = self.rect.copy 
-        # creating the movement
+        # Rect
+        self.rect = self.image.get_rect(topleft=pos)
+        self.old_rect = self.rect.copy()
+
+        # Movement
         self.direction = vector()
-        self.speed = 200
-        self.gravity = 1300 #value for gravity to allow player to fall
-        self.jump = False # create attribute to be able to change when jumping
+        self.speed = 400
+        self.gravity = 1300  # Value for gravity to allow player to fall
+        self.jump = False  # Attribute to change when jumping
         self.jump_height = 900
 
-        # collision detection
+        # Collision detection
         self.collision_sprites = collision_sprites
-        self.on_surface = {'floor': False, 'left': False, 'right' : False}
+        self.on_surface = {'floor': False, 'left': False, 'right': False}
 
-        self.display_surface = pygame.display.get_surface()
-
-        # timer 
+        # Timer
         self.timers = {
-            'wall jump' : Timer(200)
+            'wall jump': Timer(400)
         }
-        
 
     def input(self):
-        keys = pygame.key.get_pressed() # introducing key presses to control character
-        input_vector = vector(0,0)
+        keys = pygame.key.get_pressed()  # Key presses to control character
+        input_vector = vector(0, 0)
         if not self.timers['wall jump'].active:
             if keys[pygame.K_RIGHT]:
-                input_vector.x += 1 #moving to the right by 1 increment
-
+                input_vector.x += 1  # Moving to the right by 1 increment
             if keys[pygame.K_LEFT]:
-                input_vector.x -= 1 #moving to the left by 1 increment
-        
-        # if input_vector else input_vector is needed as (0,0) cannot be normalised
-      
-            self.direction.x = input_vector.normalize().x if input_vector else input_vector.x
+                input_vector.x -= 1  # Moving to the left by 1 increment
+
+            self.direction.x = input_vector.normalize().x if input_vector else 0
 
         if keys[pygame.K_SPACE]:
-           self.jump = True
-           self.timers['wall jump'].activate()
+            self.jump = True
+            self.timers['wall jump'].activate()
 
-   
-   
     def move(self, dt):
-        #horizontal
-        self.rect.x += self.direction.x * self.speed * dt # take current position and increase speed in a direction
+        # Horizontal movement
+        self.rect.x += self.direction.x * self.speed * dt
         self.collision('horizontal')
 
-        #vertical
-        if not self.on_surface['floor'] and any((self.on_surface['left'], self.on_surface['right'])):
-            self.direction.y = 0
-            self.rect.y += self.gravity / 10* dt
-        else:
-            self.direction.y += self.gravity / 2 * dt
-            self.rect.y += self.direction.y * dt
-            self.direction.y += self.gravity / 2 * dt
-        
-
-        if self.jump:
-           if self.on_surface['floor']:
-                self.direction.y = -self.jump_height
-        elif any((self.on_surface['left'], self.on_surface['right'])):
-               self.timers['wall jump'].activate()
-               self.direction.y = -self.jump_height
-               self.direction.x = 1 if self.on_surface['left'] else -1
-        self.jump = False
-
-
-
+        # Vertical movement
+        self.direction.y += self.gravity * dt
+        self.rect.y += self.direction.y * dt
         self.collision('vertical')
 
+        # Jumping
+        if self.jump:
+            if self.on_surface['floor']:
+                self.direction.y = -self.jump_height
+            elif any((self.on_surface['left'], self.on_surface['right'])):
+                self.timers['wall jump'].activate()
+                self.direction.y = -self.jump_height
+                self.direction.x = 1.5 if self.on_surface['left'] else -1.5 # Add horizontal force for wall jump
+        self.jump = False
+
     def check_contact(self):
-        floor_rect = pygame.Rect(self.rect.bottomleft,(self.rect.width,2))
-        right_rect = pygame.Rect(self.rect.topright + vector(0,self.rect.height / 4),(2, self.rect.height / 2))
-        left_rect = pygame.Rect(self.rect.topleft + vector(-2, self.rect.height / 4), (2,self.rect.height/2))
+        floor_rect = pygame.Rect(self.rect.bottomleft, (self.rect.width, 2))
+        right_rect = pygame.Rect(self.rect.topright + vector(0, self.rect.height / 4), (2, self.rect.height / 2))
+        left_rect = pygame.Rect(self.rect.topleft + vector(-2, self.rect.height / 4), (2, self.rect.height / 2))
         collide_rects = [sprite.rect for sprite in self.collision_sprites]
 
+        # Collisions
+        self.on_surface['floor'] = floor_rect.collidelist(collide_rects) >= 0
+        self.on_surface['right'] = right_rect.collidelist(collide_rects) >= 0
+        self.on_surface['left'] = left_rect.collidelist(collide_rects) >= 0
 
-        #collisions
-        self.on_surface['floor'] = True if floor_rect.collidelist(collide_rects) >= 0 else False
-        self.on_surface['right'] = True if right_rect.collidelist(collide_rects) >= 0 else False
-        self.on_surface['left'] = True if right_rect.collidelist(collide_rects) >= 0 else False
-        print(self.on_surface)
-
-
-    def collision(self,axis):
-        for sprites in self.collision_sprites:
-            if sprites.rect.colliderect(self.rect):
+    def collision(self, axis):
+        for sprite in self.collision_sprites:
+            if sprite.rect.colliderect(self.rect):
                 if axis == 'horizontal':
-                    #left
-                    if self.rect.left <= sprites.rect.right and self.old_rect.left >= sprites.old_rect.right:
-                        self.rect.left = sprites.rect.right
-                    #right
-                    if self.rect.right >= sprites.rect.left and self.old_rect.right <= sprites.old_rect.left:
-                        self.rect.right = sprites.rect.left
-                else: #vertical
-                    if self.rect.top <= sprites.rect.bottom and self.old_rect.top >= sprites.old_rect.bottom:
-                        self.rect.top = sprites.rect.bottom
+                    # Left collision
+                    if self.direction.x < 0:  # Moving left
+                        self.rect.left = sprite.rect.right
+                    # Right collision
+                    elif self.direction.x > 0:  # Moving right
+                        self.rect.right = sprite.rect.left
+                else:  # Vertical collision
+                    # Top collision
+                    if self.direction.y < 0:  # Moving up
+                        self.rect.top = sprite.rect.bottom
+                        self.direction.y = 0  # Stop vertical movement
+                    # Bottom collision
+                    elif self.direction.y > 0:  # Moving down
+                        self.rect.bottom = sprite.rect.top
+                        self.direction.y = 0  # Stop vertical movement
+                        self.on_surface['floor'] = True  # Player is on the ground
 
-                    #bottom collision
-                    if self.rect.bottom >= sprites.rect.top and self.old_rect.bottom <= sprites.old_rect.top:
-                        self.rect.bottom = sprites.rect.top 
-                    self.direction.y = 0  # to keep gravity constant while playing the game             
-            
     def update_timers(self):
         for timer in self.timers.values():
             timer.update()
 
-        
     def update(self, dt):
         self.old_rect = self.rect.copy()
         self.update_timers()
