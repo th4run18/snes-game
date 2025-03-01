@@ -15,12 +15,23 @@ class MovingSprite(Sprite):
         self.rect.center = start_pos
         self.start_pos = start_pos
         self.end_pos = end_pos
-
+        speed = 100  
+        
         # movement
         self.speed = speed
         self.direction = vector(1,0) if move_dir == 'x' else vector(0,1)
         self.move_dir = move_dir
 
+    def check_border(self):
+         if self.move_dir == 'x':
+             if self.rect.right >= self.end_pos[0] and self.direction.x == 1: # introduce and end position to the game.
+                 self.direction = -1
+                 self.rect.right = self.end_pos[0]
+
+
+
     def update(self,dt):
         self.old_rect = self.rect.copy()
         self.rect.topleft += self.direction * self.speed * dt
+        self.check_border()
+      

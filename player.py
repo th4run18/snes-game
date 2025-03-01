@@ -72,6 +72,7 @@ class Player(pygame.sprite.Sprite):
         self.on_surface['floor'] = floor_rect.collidelist(collide_rects) >= 0
         self.on_surface['right'] = right_rect.collidelist(collide_rects) >= 0
         self.on_surface['left'] = left_rect.collidelist(collide_rects) >= 0
+    
 
     def collision(self, axis):
         for sprite in self.collision_sprites:
@@ -104,4 +105,5 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.move(dt)
         self.check_contact()
+        print(self.timers['wall jump'].active )
         # Removed the print statement to stop printing True/False
