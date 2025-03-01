@@ -27,7 +27,7 @@ class Level:
                 if obj.width > obj.height: # horizontal
                     move_dir = 'x'
                     start_pos = (obj.x , obj.y + obj.height / 2)
-                    end_pos = (obj.x , obj.width,obj.y + obj.height / 2)
+                    end_pos = (obj.x + obj.width,obj.y + obj.height / 2)
                 else: # vertical
                     move_dir = 'y'
                     start_pos = (obj.x + obj.width/2 , obj.y)
