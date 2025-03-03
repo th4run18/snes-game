@@ -16,7 +16,7 @@ class MovingSprite(Sprite):
         self.start_pos = start_pos
         self.end_pos = end_pos
         speed = 100  
-        
+
         # movement
         self.speed = speed
         self.direction = vector(1,0) if move_dir == 'x' else vector(0,1)
@@ -32,6 +32,7 @@ class MovingSprite(Sprite):
 
     def update(self,dt):
         self.old_rect = self.rect.copy()
+        self.direction = pygame.math.Vector2(self.direction)  # Ensure it's a Vector2
         self.rect.topleft += self.direction * self.speed * dt
         self.check_border()
       
