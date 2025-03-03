@@ -15,7 +15,7 @@ class MovingSprite(Sprite):
         self.rect.center = start_pos
         self.start_pos = start_pos
         self.end_pos = end_pos
-        speed = 100  
+        speed = 50
 
         # movement
         self.speed = speed
