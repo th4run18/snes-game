@@ -24,9 +24,13 @@ class MovingSprite(Sprite):
 
     def check_border(self):
          if self.move_dir == 'x':
-             if self.rect.right >= self.end_pos[0] and self.direction.x == 1: # introduce and end position to the game.
+            if self.rect.right >= self.end_pos[0] and self.direction.x == 1: # introduce and end position to the game.
                  self.direction.x = -1 # didnt write X 
                  self.rect.right = self.end_pos[0]
+            if self.rect.left <= self.start_pos[0] and self.direction.x == -1:
+                self.direction.x = 1
+                self.rect.left = self.start_pos[0]
+                 
 
 
 
