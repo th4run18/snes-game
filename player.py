@@ -54,11 +54,18 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.direction.y * dt
         self.collision('vertical')
 
+         # If on a platform, stay locked to it
+        if self.platform:
+            self.rect.bottom = self.platform.rect.top
+            self.direction.y = 0  # Prevents gravity from pulling down
+
         # Jumping
         if self.jump:
             if self.on_surface['floor']:
                 self.direction.y = -self.jump_height
-            elif any((self.on_surface['left'], self.on_surface['right'])):
+                #self.timers['wall slide block'].activate()
+                self.rect.bottom -= 1
+            elif any((self.on_surface['left'], self.on_surface['right'])): #and not self.timers['wall slide block']:
                 self.timers['wall jump'].activate()
                 self.direction.y = -self.jump_height
                 self.direction.x = 1.5 if self.on_surface['left'] else -1.5
@@ -113,6 +120,6 @@ class Player(pygame.sprite.Sprite):
         self.old_rect = self.rect.copy()
         self.update_timers()
         self.input()
-        self.move(dt)
-        self.platform_move(dt)
+        self.platform_move(dt)  # Move with platform first
+        self.move(dt)  # Then apply player's own movement
         self.check_contact()
