@@ -74,12 +74,24 @@ class Player(pygame.sprite.Sprite):
                 self.timers['wall slide block'].activate()
                 self.hitbox_rect.bottom -= 1
                 
-            elif any((self.on_surface['left'], self.on_surface['right'])) and not self.timers['wall slide block']:
+         #  # elif any((self.on_surface['left'], self.on_surface['right'])) and not self.timers['wall slide block']:
+         #       self.timers['wall jump'].activate()
+         #       self.direction.y = -self.jump_height
+          #      self.direction.x = 1 if self.on_surface['left'] else -1
+          #  self.jump = False
+            elif any((self.on_surface['left'], self.on_surface['right'])) and not self.timers['wall slide block'].active:
                 self.timers['wall jump'].activate()
                 self.direction.y = -self.jump_height
-                self.direction.x = 1 if self.on_surface['left'] else -1
-            self.jump = False
-        
+
+    # Allow jumping away from the wall
+        if self.on_surface['left']:
+            self.direction.x = 1  # Push right
+        elif self.on_surface['right']:
+            self.direction.x = -1  # Push left
+
+        self.timers['wall slide block'].activate()
+        self.jump = False
+
         self.collision('vertical')
     
         self.semi_collision()

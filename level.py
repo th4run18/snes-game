@@ -1,7 +1,7 @@
 from setting import *
 from sprites import Sprite, MovingSprite
 from player import Player # importing player to allow it to be able to interact with the level
-from groups import AllSprites
+from groups import AllSprites #importing the camera
 
 
 class Level:
@@ -15,9 +15,10 @@ class Level:
 
         self.setup(tmx_map)
 
-    def setup(self, tmx_map):#pritning the tile map
-        for x, y, surf in tmx_map.get_layer_by_name('Terrain').tiles(): # being able to connect tiled to my terminal
-            Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, (self.all_sprites, self.collision_sprites))
+    def setup(self, tmx_map):#printing the tile map
+        for layer in ['BG', 'Terrain', 'FG', 'Platforms']:
+            for x, y, surf in tmx_map.get_layer_by_name(layer).tiles(): # being able to connect tiled to my terminal
+                Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, (self.all_sprites, self.collision_sprites))
 
         #objects
         for obj in tmx_map.get_layer_by_name('Objects'):

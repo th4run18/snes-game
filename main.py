@@ -8,7 +8,7 @@ class Game:
 	def __init__(self):
 		pygame.init()
 		self.display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-		pygame.display.set_caption('super pirate world')
+		pygame.display.set_caption('super pirate orld')
 		self.clock =  pygame.time.Clock()
       
 		self.tmx_maps = {0: load_pygame(join('Super-Pirate-World-main', 'data','levels', 'omni.tmx'))}
@@ -29,4 +29,4 @@ class Game:
 
 if __name__ == '__main__':			
 	game = Game()
-	game.run()  
+	game.run()   
