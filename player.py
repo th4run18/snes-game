@@ -65,20 +65,13 @@ class Player(pygame.sprite.Sprite):
             self.direction.y += self.gravity / 2 * dt 
             self.hitbox_rect.y += self.direction.y * dt 
             self.direction.y += self.gravity / 2 * dt
-        #self.direction.y += self.gravity * dt
-        #self.rect.y += self.direction.y * dt
-        #self.collision('vertical')
-
-         # If on a platform, stay locked to it
-       # if self.platform:
-            #self.rect.bottom = self.platform.rect.top
-            #self.direction.y = 0  # Prevents gravity from pulling down
+       
 
         # Jumping
         if self.jump:
             if self.on_surface['floor']:
                 self.direction.y = -self.jump_height
-                #self.timers['wall slide block'].activate()
+                self.timers['wall slide block'].activate()
                 self.hitbox_rect.bottom -= 1
                 
             elif any((self.on_surface['left'], self.on_surface['right'])) and not self.timers['wall slide block']:
@@ -96,7 +89,7 @@ class Player(pygame.sprite.Sprite):
     def platform_move(self,dt):
         if self.platform:
             self.hitbox_rect.topleft += self.platform.direction * self.platform.speed * dt
-           # self.hitbox_rect.x += self.platform.direction.x * self.platform.speed * dt
+            #self.hitbox_rect.x += self.platform.direction.x * self.platform.speed * dt
             #self.hitbox_rect.y += self.platform.direction.y * self.platform.speed * dt
 
     def check_contact(self):
@@ -141,7 +134,7 @@ class Player(pygame.sprite.Sprite):
                         self.hitbox_rect.bottom = sprite.rect.top
                         self.direction.y = 0 
                        
-                    #self.on_surface['floor'] = True  # Player is on the ground
+                    self.on_surface['floor'] = True  # Player is on the ground
 
     def semi_collision(self):
         if not self.timers['platform skip'].active:
