@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):
         self.timers = {
             'wall jump': Timer(400),
             'wall slide block': Timer(250),
-            'platform skip' : Timer(300)
+            'platform skip' : Timer(100)
         }
 
     def input(self):

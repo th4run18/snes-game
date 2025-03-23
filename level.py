@@ -18,7 +18,10 @@ class Level:
     def setup(self, tmx_map):#printing the tile map
         for layer in ['BG', 'Terrain', 'FG', 'Platforms']:
             for x, y, surf in tmx_map.get_layer_by_name(layer).tiles(): # being able to connect tiled to my terminal
-                Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, (self.all_sprites, self.collision_sprites))
+                groups = [self.all_sprites]
+                if layer == 'Terrain': groups.append(self.collision_sprites)
+                if layer == 'Platforms': groups.append(self.semi_collision_sprites)
+                Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, groups)
 
         #objects
         for obj in tmx_map.get_layer_by_name('Objects'):
