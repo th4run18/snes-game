@@ -1,12 +1,13 @@
 from setting import *
 
 class Sprite(pygame.sprite.Sprite):
-    def __init__(self, pos, surf = pygame.Surface((TILE_SIZE, TILE_SIZE)), groups = None):
+    def __init__(self, pos, surf = pygame.Surface((TILE_SIZE, TILE_SIZE)), groups = None, z = Z_LAYERS['main']):
         super().__init__(groups) 
         self.image = surf # ensure that the surf will not be ignored
         
         self.rect = self.image.get_rect(topleft = pos)
         self.old_rect = self.rect.copy()
+        self.z = z #creating a attribute
         #putting objects in a class so we can display it 
 
 

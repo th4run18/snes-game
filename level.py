@@ -21,7 +21,8 @@ class Level:
                 groups = [self.all_sprites]
                 if layer == 'Terrain': groups.append(self.collision_sprites)
                 if layer == 'Platforms': groups.append(self.semi_collision_sprites)
-                Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, groups)
+                z= Z_LAYERS['bg tiles']#all tiles will be in the background
+                Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, groups, z)
 
         #objects
         for obj in tmx_map.get_layer_by_name('Objects'):
