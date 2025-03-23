@@ -1,13 +1,15 @@
 from setting import *
 from sprites import Sprite, MovingSprite
 from player import Player # importing player to allow it to be able to interact with the level
+from groups import AllSprites
+
 
 class Level:
     def __init__(self, tmx_map):
         self.display_surface = pygame.display.get_surface()
 
         # groups
-        self.all_sprites = pygame.sprite.Group()
+        self.all_sprites = AllSprites()
         self.collision_sprites=pygame.sprite.Group() #creates an empty group of sprites that you can later add objects to.
         self.semi_collision_sprites = pygame.sprite.Group()
 
@@ -45,5 +47,5 @@ class Level:
     def run(self, dt):
         self.display_surface.fill('black') # setting a black ground to black to be able to see the platform clearly
         self.all_sprites.update(dt)
-        self.all_sprites.draw(self.display_surface)
+        self.all_sprites.draw()
         

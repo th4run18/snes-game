@@ -151,9 +151,6 @@ class Player(pygame.sprite.Sprite):
                             self.hitbox_rect.bottom = sprite.rect.top
                             if self.direction.y > 0:
                                 self.direction.y = 0 # to eunsure that gravity does not increase while on the platform
-                   
-
-
 
     def update_timers(self):
         for timer in self.timers.values():
