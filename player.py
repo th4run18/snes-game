@@ -1,11 +1,14 @@
 from setting import *
 from timer import Timer
+from os.path import join
+
 
 class Player(pygame.sprite.Sprite): 
     def __init__(self, pos, groups, collision_sprites, semi_collision_sprites):
         super().__init__(groups)
-        self.image = pygame.Surface((48, 56))  # General dimensions of the character
-        self.image.fill('red')  # Red to allow player to be seen in the black background
+        self.image =  pygame.image.load(join( 'Super-Pirate-World-main','graphics', 'player','idle','0.png'))
+        
+        
 
         # Rect
         self.rect = self.image.get_rect(topleft=pos)
