@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
         # Timer
         self.timers = {
             'wall jump': Timer(400),
-            'wall slide back': Timer(250),
+            'wall slide block': Timer(250),
             'platform skip' : Timer(300)
         }
 
@@ -59,7 +59,7 @@ class Player(pygame.sprite.Sprite):
 
         # Vertical movement
         if not self.on_surface['floor'] and any((self.on_surface['left'], self.on_surface['right'])) and not self.timers['wall slide block'].active:
-            self.directon.y = 0
+            self.direction.y = 0
             self.hitbox_rect.y += self.gravity / 10 * dt
         else:
             self.direction.y += self.gravity / 2 * dt 
