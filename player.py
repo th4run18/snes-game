@@ -123,21 +123,21 @@ class Player(pygame.sprite.Sprite):
             if sprite.rect.colliderect(self.hitbox_rect):
                 if axis == 'horizontal':
                     # Left collision
-                    if self.hitbox_rect.left <= sprite.rect.right and int(self.old_rect.left) >= sprite.old_rect.right:
+                    if self.hitbox_rect.left <= sprite.rect.right and int(self.old_rect.left) >= int(sprite.old_rect.right):
                         self.hitbox_rect.left = sprite.rect.right
                     # Right collision
-                    elif self.hitbox_rect.right >= sprite.rect.left and int(self.old_rect.right) <= sprite.old_rect.left:
+                    elif self.hitbox_rect.right >= sprite.rect.left and int(self.old_rect.right) <=int( sprite.old_rect.left):
                         self.hitbox_rect.right = sprite.rect.left
                 else:  # Vertical collision
                     # Top collision
-                    if self.hitbox_rect.top <= sprite.rect.bottom and int(self.old_rect.top) >= sprite.old_rect.bottom:
+                    if self.hitbox_rect.top <= sprite.rect.bottom and int(self.old_rect.top) >= int(sprite.old_rect.bottom):
                         self.hitbox_rect.top = sprite.rect.bottom + 1
                         #self.direction.y = max(self.direction.y, 50)  # Small downward force to help fall
                         if hasattr(sprite, 'moving'):
                             self.hitbox_rect.top += 6
                         
                     # Bottom collision
-                    if self.hitbox_rect.bottom >= sprite.rect.top and int(self.old_rect.bottom) <= sprite.old_rect.top:
+                    if self.hitbox_rect.bottom >= sprite.rect.top and int(self.old_rect.bottom) <= int(sprite.old_rect.top):
                         self.hitbox_rect.bottom = sprite.rect.top
                         self.direction.y = 0 
                        

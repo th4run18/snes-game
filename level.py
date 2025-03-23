@@ -22,7 +22,7 @@ class Level:
         #objects
         for obj in tmx_map.get_layer_by_name('Objects'):
             if obj.name == 'player': # introduces the players start position
-                Player((obj.x,obj.y), self.all_sprites, self.collision_sprites, self.semi_collision_sprites) # PLAYER is not in collision_sprites, stops Player from colliding with itself
+                self.player = Player((obj.x,obj.y), self.all_sprites, self.collision_sprites, self.semi_collision_sprites) # PLAYER is not in collision_sprites, stops Player from colliding with itself
 
         # Moving objects
         for obj in tmx_map.get_layer_by_name('Moving Objects'):
@@ -47,5 +47,5 @@ class Level:
     def run(self, dt):
         self.display_surface.fill('black') # setting a black ground to black to be able to see the platform clearly
         self.all_sprites.update(dt)
-        self.all_sprites.draw()
+        self.all_sprites.draw(self.player.hitbox_rect.center)
         
