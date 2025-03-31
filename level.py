@@ -16,18 +16,31 @@ class Level:
         self.setup(tmx_map)
 
     def setup(self, tmx_map):#printing the tile map
+
+
         for layer in ['BG', 'Terrain', 'FG', 'Platforms']:
             for x, y, surf in tmx_map.get_layer_by_name(layer).tiles(): # being able to connect tiled to my terminal
                 groups = [self.all_sprites]
                 if layer == 'Terrain': groups.append(self.collision_sprites)
                 if layer == 'Platforms': groups.append(self.semi_collision_sprites)
-                z= Z_LAYERS['bg tiles']#all tiles will be in the background
-                Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, groups, z)
+                z= Z_LAYERS['bg tiles'] #all tiles will be in the background
+                # if layer == ' BG':
+                #     z = Z_LAYERS['bg tiles']
+                # elif layer == 'FG':
+                #     z = Z_LAYERS['fg']
+                # else:
+                #     z = Z_LAYERS['main']
 
-        #objects
+                Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, groups, z )
+
+          #objects
+        
+        # OBJECTS
         for obj in tmx_map.get_layer_by_name('Objects'):
-            if obj.name == 'player': # introduces the players start position
+            if obj.name == 'player': # introduces the players start position   
                 self.player = Player((obj.x,obj.y), self.all_sprites, self.collision_sprites, self.semi_collision_sprites) # PLAYER is not in collision_sprites, stops Player from colliding with itself
+        
+       
 
         # Moving objects
         for obj in tmx_map.get_layer_by_name('Moving Objects'):

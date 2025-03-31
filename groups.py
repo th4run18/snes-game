@@ -12,6 +12,7 @@ class AllSprites(pygame.sprite.Group):
         self.offset.y = -(target_pos[1] - WINDOW_HEIGHT / 2) # to keep the player in the middle
         
         for sprite in sorted(self, key = lambda sprite: sprite.z ):
+            #sorts all sprite based on their Z value
             offset_pos = sprite.rect.topleft + self.offset
             self.display_surface.blit(sprite.image, offset_pos)
                 # this
