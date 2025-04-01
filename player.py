@@ -62,9 +62,9 @@ class Player(pygame.sprite.Sprite):
             self.direction.y = 0
             self.hitbox_rect.y += self.gravity / 10 * dt
         else:
-            self.direction.y += self.gravity / 2 * dt 
+            self.direction.y += self.gravity / 1.5 * dt 
             self.hitbox_rect.y += self.direction.y * dt 
-            self.direction.y += self.gravity / 2 * dt
+            self.direction.y += self.gravity / 1.5 * dt
        
 
         # Jumping
