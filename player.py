@@ -6,7 +6,7 @@ from os.path import join
 class Player(pygame.sprite.Sprite): 
     def __init__(self, pos, groups, collision_sprites, semi_collision_sprites):
         super().__init__(groups)
-        self.image =  pygame.image.load(join( 'Super-Pirate-World-main','graphics', 'player','idle','0.png'))
+        self.image =  pygame.image.load(join( 'GAME_1','graphics', 'player','idle','0.png'))
         self.z = Z_LAYERS['main']
         
 

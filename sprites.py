@@ -4,13 +4,17 @@ class Sprite(pygame.sprite.Sprite):
     def __init__(self, pos, surf = pygame.Surface((TILE_SIZE, TILE_SIZE)), groups = None, z = Z_LAYERS['main']):
         super().__init__(groups) 
         self.image = surf # ensure that the surf will not be ignored
-        
+        #self.image.fill('White')
         self.rect = self.image.get_rect(topleft = pos)
         self.old_rect = self.rect.copy()
         self.z = z #creating a attribute
         #putting objects in a class so we can display it 
 
 
+class AnimatedSprite(Sprite):
+     def __init__(self, pos, frames, groups, z = Z_LAYERS['main'], animation_speed = ANIMATION_SPEED):
+          self.frames, self.frame_index = frames, 0 #keeping track of the current frame in the folder
+          super().__init__(pos, self.frames[self.frame_index], groups, z) #first frame is the initial image
 
 
 class MovingSprite(Sprite):
