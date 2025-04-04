@@ -12,11 +12,20 @@ class Sprite(pygame.sprite.Sprite):
 
 
 class AnimatedSprite(Sprite):
-     def __init__(self, pos, frames, groups, z = Z_LAYERS['main'], animation_speed = ANIMATION_SPEED):
-          self.frames, self.frame_index = frames, 0 #keeping track of the current frame in the folder
-          super().__init__(pos, self.frames[self.frame_index], groups, z) #first frame is the initial image
+    def __init__(self, pos, frames, groups, z = Z_LAYERS['main'], animation_speed = ANIMATION_SPEED):
+        self.frames, self.frame_index = frames, 0 #keeping track of the current frame in the folder
+        super().__init__(pos, self.frames[self.frame_index], groups, z) #first frame is the initial image
+        self.animation_speed = animation_speed  
 
+    def animate(self, dt):
+         self.frame_index += self.animation_speed * dt # increasing frame gradually
+         self.image = self.frames[int(self.frame_index % len(self.frames))] 
+         # the % prevents out of range errors by looping back to start of the list 
 
+    
+    def update(self, dt):
+        self.animate(dt) #called every frame so updates the image
+     
 class MovingSprite(Sprite):
     def __init__(self,groups, start_pos , end_pos, move_dir, speed):
         surf = pygame.Surface((200,50))

@@ -1,14 +1,23 @@
+import pygame
 from setting import *
 from timer import Timer
 from os.path import join
 
 
 class Player(pygame.sprite.Sprite): 
-    def __init__(self, pos, groups, collision_sprites, semi_collision_sprites):
+    def __init__(self, pos, groups, collision_sprites, semi_collision_sprites, frames):
+        #General set-up
         super().__init__(groups)
-        self.image =  pygame.image.load(join( 'GAME_1','graphics', 'player','idle','0.png'))
         self.z = Z_LAYERS['main']
-        
+
+
+        # the image
+        self.frames, self.frame_index = frames, 0
+        #self.image = self.frames['idle'][self.frames]
+        # Showing the first image from the directory, easy to create animations
+        self.state, self.facing_right = 'idle', True
+        self.image = self.frames[self.state][self.frame_index]
+
 
         # Rect
         self.rect = self.image.get_rect(topleft=pos)
@@ -41,8 +50,10 @@ class Player(pygame.sprite.Sprite):
         if not self.timers['wall jump'].active:
             if keys[pygame.K_RIGHT]:
                 input_vector.x += 1  # Moving to the right by 1 increment
+                self.facing_right = True
             if keys[pygame.K_LEFT]:
                 input_vector.x -= 1  # Moving to the left by 1 increment
+                self.facing_right = False
             if keys[pygame.K_DOWN]:
                 self.timers['platform skip'].activate()
             self.direction.x = input_vector.normalize().x if input_vector else 0
@@ -161,6 +172,12 @@ class Player(pygame.sprite.Sprite):
         for timer in self.timers.values():
             timer.update()
 
+    def animate(self, dt):
+
+        self.frame_index += ANIMATION_SPEED * dt
+        self.image = self.frames[self.state][int(self.frame_index % len(self.frames[self.state]))]
+        self.image = self.image if self.facing_right else pygame.transform.flip(self.image, True, False)
+
     def update(self, dt):
         self.old_rect = self.hitbox_rect.copy()
         self.update_timers()
@@ -168,5 +185,7 @@ class Player(pygame.sprite.Sprite):
         self.move(dt)  # Then apply player's own movement
         self.platform_move(dt)  # Move with platform first
         self.check_contact()
+
+        self.animate(dt)
        
        

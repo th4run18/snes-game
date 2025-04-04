@@ -1,3 +1,4 @@
+import pygame
 from setting import *
 from sprites import Sprite,AnimatedSprite, MovingSprite
 from player import Player # importing player to allow it to be able to interact with the level
@@ -15,7 +16,7 @@ class Level:
 
         self.setup(tmx_map, level_frames)
 
-    def setup(self, tmx_map, level_frames):#printing the tile map
+    def setup(self, tmx_map, level_frames):#printing the tile map  
 
 
         for layer in ['BG', 'Terrain', 'FG', 'Platforms']:
@@ -25,21 +26,20 @@ class Level:
                 if layer == 'Platforms': groups.append(self.semi_collision_sprites)
                 
                 z= Z_LAYERS['bg tiles'] #all tiles will be in the background
-                # if layer == ' BG':
-                #     z = Z_LAYERS['bg tiles']
-                # elif layer == 'FG':
-                #     z = Z_LAYERS['fg']
-                # else:
-                #     z = Z_LAYERS['main']
-
                 Sprite((x * TILE_SIZE,y * TILE_SIZE), surf, groups, z )
 
-          #objects
+                    
+		    
         
         # OBJECTS
         for obj in tmx_map.get_layer_by_name('Objects'):
             if obj.name == 'player': # introduces the players start position   
-                self.player = Player((obj.x,obj.y), self.all_sprites, self.collision_sprites, self.semi_collision_sprites) # PLAYER is not in collision_sprites, stops Player from colliding with itself
+                self.player = Player(
+                    pos = (obj.x,obj.y), 
+                    groups = self.all_sprites,
+                    collision_sprites= self.collision_sprites, 
+                    semi_collision_sprites= self.semi_collision_sprites,
+                    frames = level_frames['player']) # retreive frames for player
             else:
                 if obj.name in ('barrel', 'crate'):
                     Sprite((obj.x, obj.y), obj.image , (self.all_sprites, self.collision_sprites))
@@ -47,6 +47,8 @@ class Level:
                     if 'palm' not in obj.name:
                         frames = level_frames[obj.name]
                         AnimatedSprite((obj.x, obj.y), frames, self.all_sprites)
+
+            
 
         # Moving objects
         for obj in tmx_map.get_layer_by_name('Moving Objects'):
