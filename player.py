@@ -13,10 +13,11 @@ class Player(pygame.sprite.Sprite):
 
         # the image
         self.frames, self.frame_index = frames, 0
-        #self.image = self.frames['idle'][self.frames]
-        # Showing the first image from the directory, easy to create animations
+        # idle sets the initial animation state to idle 
         self.state, self.facing_right = 'idle', True
+        #used a boolean True to keep track of left anf right movement
         self.image = self.frames[self.state][self.frame_index]
+        # frame_index determines the specific frame, which is drawn on the screen
 
 
         # Rect
@@ -30,6 +31,7 @@ class Player(pygame.sprite.Sprite):
         self.gravity = 1300  # Value for gravity to allow player to fall
         self.jump = False  # Attribute to change when jumping
         self.jump_height = 900
+        self.attacking = False
 
         # Collision detection
         self.collision_sprites = collision_sprites
@@ -41,26 +43,40 @@ class Player(pygame.sprite.Sprite):
         self.timers = {
             'wall jump': Timer(400),
             'wall slide block': Timer(250),
-            'platform skip' : Timer(100)
+            'platform skip' : Timer(100),
+            'attack block' : Timer(500)
         }
 
     def input(self):
         keys = pygame.key.get_pressed()  # Key presses to control character
         input_vector = vector(0, 0)
+
+
         if not self.timers['wall jump'].active:
             if keys[pygame.K_RIGHT]:
                 input_vector.x += 1  # Moving to the right by 1 increment
                 self.facing_right = True
             if keys[pygame.K_LEFT]:
                 input_vector.x -= 1  # Moving to the left by 1 increment
-                self.facing_right = False
+                self.facing_right = False #switches images and faces player left when arrow is clicked
             if keys[pygame.K_DOWN]:
                 self.timers['platform skip'].activate()
+
+            if keys[pygame.K_a]:
+                self.attack()
+
             self.direction.x = input_vector.normalize().x if input_vector else 0
 
         if keys[pygame.K_SPACE]:
             self.jump = True
             self.timers['wall jump'].activate()
+
+    def attack(self):
+        if not self.timers['attack block'].active:
+            self.attacking = True
+            self.frame_index = 0
+            self.timers['attack block'].activate()
+
 
     def move(self, dt):
 
@@ -174,9 +190,34 @@ class Player(pygame.sprite.Sprite):
 
     def animate(self, dt):
 
-        self.frame_index += ANIMATION_SPEED * dt
+        self.frame_index += ANIMATION_SPEED * dt #dt to progress at a consistant rate
+        if self.state == 'attack' and self.frame_index >= len(self.frames[self.state]):
+            self.state = 'idle' # resest player to 'idle'
+            self.attacking = False #resets attack to false to its doesnt attack at the time
+        elif self.state == 'air_attack' and self.frame_index >= len(self.frames[self.state]):
+            self.attacking = False  # Also reset after air attack
         self.image = self.frames[self.state][int(self.frame_index % len(self.frames[self.state]))]
-        self.image = self.image if self.facing_right else pygame.transform.flip(self.image, True, False)
+
+        self.image = self.image if self.facing_right else pygame.transform.flip(self.image, True, False) 
+        #flipping image in horizontal axis
+
+    def get_state(self):
+        if self.on_surface['floor']:
+            if self.attacking:
+                self.state = 'attack'
+            else:
+                self.state = 'idle' if self.direction.x == 0 else 'run'
+                # if the player isnt attacking it returns to its idle state
+        else:
+            if self.attacking:
+                self.state = 'air_attack'
+            else:
+                if any((self.on_surface['left'], self.on_surface['right'])):
+                    self.state = 'wall' # goes to wall state if it touches a wall
+                else:
+                    self.state = 'jump' if self.direction.y < 0 else 'fall'
+                    # it falls or jump is it not attacking
+
 
     def update(self, dt):
         self.old_rect = self.hitbox_rect.copy()
@@ -185,7 +226,7 @@ class Player(pygame.sprite.Sprite):
         self.move(dt)  # Then apply player's own movement
         self.platform_move(dt)  # Move with platform first
         self.check_contact()
-
+        self.get_state()
         self.animate(dt)
        
        
